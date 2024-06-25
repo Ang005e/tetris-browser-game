@@ -56,3 +56,5 @@ function rotateBlock(shapeMiddleBlock, shapeBlocks, rotationDirection) {
 
 
 }
+
+ */
