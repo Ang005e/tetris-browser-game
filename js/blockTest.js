@@ -7,7 +7,7 @@ document.addEventListener('keydown', e => {
 })
 
 // Choose a tetris-like shape (from preset options).
-
+// A small change!
 // Movement:
 // Change the position of each block to correspond to the key pressed. i.e., pressed left arrow? Move down a row.
 
