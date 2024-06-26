@@ -22,11 +22,11 @@ document.addEventListener('keydown', e => {
 function keyPressDirection(key) {
     let direction;
     switch(key.keyCode) {
-        case 37:
+        case 37: // left arrow key
             direction = 'counter clockwise'
             console.log(direction)
             return direction;
-        case 39:
+        case 39: // right arrow key
             direction = 'clockwise'
             console.log(direction)
             return direction;
@@ -36,71 +36,80 @@ function keyPressDirection(key) {
 }
 
 function rotateBlock(blocks, rotationDirection) {
-    let rotationDegrees;
+    let rotation = parseInt(getComputedStyle(document.querySelector('main div')).rotate.split('deg')[0]);
 
-    switch (rotationDirection) {
-        case 'counter clockwise':
-            rotationDegrees = -90
-            break
-        case 'clockwise':
-            rotationDegrees = 90
-            break
+    if (rotation !== ((rotation - 90) || (rotation + 90))) {
+        switch (rotationDirection) {
+            case 'counter clockwise':
+                rotation += -90
+                break
+            case 'clockwise':
+                rotation += 90
+                break
+        }
+    }else if ((rotation >= 360) || (rotation <= -360)) {
+        (rotation = 0)
     }
 
+    /*
     let xCoord = [];
     let yCoord = [];
     let xCoordRange = [];
     let yCoordRange = [];
     let xAxisFurther;
+    */
 
     gridDimensions()
 
     // testing block generation within the range of the grid
     // this should be repurposed for random placement of the left/rightmost block on the screen
 
-    // blocks.forEach(block => block.style.gridColumnStart = (Math.round(Math.random() * gridDimensions(1))).toString())
-
-    blocks.forEach(block => block.style.gridColumnStart = gridRange('rows'));
+    blocks.forEach(block => block.style.gridColumnStart = gridRange('columns'));
     blocks.forEach(block => block.style.gridRowStart = gridRange('rows'));
 
             for (let i = 0; i < blocks.length; i++) {
         let block = blocks[i];
 
-        block.style.transform = `rotate(${rotationDegrees}deg)`; // turns each block around, but doesn't move them.
+        console.log(rotation)
+        block.style.rotate = `${rotation}deg`; // turns each block around, but doesn't move them.
 
+        /*
         xCoord[i] = block.style.gridColumnStart;
         yCoord[i] = block.style.gridRowStart;
+        */
 
     }
 
     // Calculate the new coordinates
 
     // Get the lowest and highest values in the arrays...
+
+    /*
     xCoord.forEach(value => (xCoordRange < value) && (xCoordRange = value))
     yCoord.forEach(value => (yCoordRange < value) && (yCoordRange = value))
 
-    /*
-    i.e.
-    1, 10
-    5, 2
-
-     */
+    // i.e.
+    // 1, 10
+    // 5, 2
 
     // ...and the axis where the blocks are the furthest apart...
+
     xCoordRange.sort();
     yCoordRange.sort();
     xAxisFurther = (xCoordRange[0] - xCoordRange[1]) > (yCoordRange[0] - yCoordRange[1]);
     console.log(`X axis is further? ${xAxisFurther}`);
 
     // ...then figure out the centre block based on that.
+
+    */
 }
 
 function gridDimensions(returnIndex) {
     // 0 = rows, 1 = columns, 2 = area, 3 = all
     let cols = getComputedStyle(document.querySelector('main')).gridTemplateColumns.split(' ').length
     let rows = getComputedStyle(document.querySelector('main')).gridTemplateRows.split(' ').length
-    let dimensions = [rows, cols, rows*cols, [rows, cols, rows*cols]]
-    console.log(dimensions);
+    let dimensions = [rows, cols, rows*cols]
+    // console.log(dimensions);
     return dimensions[returnIndex];
 }
 
