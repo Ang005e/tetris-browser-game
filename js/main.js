@@ -38,6 +38,8 @@ function keyPressDirection(key) {
 function rotateBlock(blocks, rotationDirection) {
     let rotation = parseInt(getComputedStyle(document.querySelector('main div')).rotate.split('deg')[0]);
 
+    // to avoid rotating over 360 or -360 degrees, reset the rotation property if it goes too high or low
+    // not working :/
     if (rotation !== ((rotation - 90) || (rotation + 90))) {
         switch (rotationDirection) {
             case 'counter clockwise':
@@ -51,42 +53,70 @@ function rotateBlock(blocks, rotationDirection) {
         (rotation = 0)
     }
 
-    /*
-    let xCoord = [];
-    let yCoord = [];
+
+    let xCoordOld = [];
+    let yCoordOld = [];
     let xCoordRange = [];
     let yCoordRange = [];
     let xAxisFurther;
-    */
+
 
     gridDimensions()
 
-    // testing block generation within the range of the grid
-    // this should be repurposed for random placement of the left/rightmost block on the screen
+    /*
+    ToDo:
+    My Idea;
+    Keep using grid as a quick easy method to calculate the location of, and place, blocks.
+    However, get and use coords (top/left) LOCALLY for visual animations (as grid cannot use "transition"
+    when changing the grid box of elements).
 
-    blocks.forEach(block => block.style.gridColumnStart = gridRange('columns'));
-    blocks.forEach(block => block.style.gridRowStart = gridRange('rows'));
+    i.e.
+    1. The new location of the block is calculated in grid-col and grid-row (lets say 2, 5).
+    2. The co-ordinates of the future (new) location of the block are retrieved (the
+    ones we just calculated). How to do this, I wonder?
+    3. The co-ordinates of the current (old) location of the block are retrieved.
 
-            for (let i = 0; i < blocks.length; i++) {
+    1. transition happens using coords (left and top)
+    2. coords are reset so as to not interfere with anything else
+    3. block moved permanently with grid row/col
+    */
+
+
+
+    // blocks.forEach(block => block.style.gridColumnStart = gridRange('columns'));
+    // blocks.forEach(block => block.style.gridRowStart = gridRange('rows'));
+
+    for (let i = 0; i < blocks.length; i++) {
         let block = blocks[i];
 
         console.log(rotation)
         block.style.rotate = `${rotation}deg`; // turns each block around, but doesn't move them.
 
-        /*
-        xCoord[i] = block.style.gridColumnStart;
-        yCoord[i] = block.style.gridRowStart;
-        */
 
+        // The new location of the block is calculated in grid-col and grid-row
+        let newRowPos= gridRange('rows')
+        let newColPos= gridRange('columns')
+
+        // The current (old) co-ordinates of the block are retrieved.
+        xCoordOld[i] = block.style.left;
+        yCoordOld[i] = block.style.top;
+
+        //The future (new) co-ordinates of the block are retrieved
+        let xCoordNew = block.style.left;
+        let yCoordNew = block.style.top;
+
+        // so before this, the temporary visual transition should happen
+        block.style.gridRowStart = newRowPos;
+        block.style.gridColumnStart = newColPos;
     }
 
-    // Calculate the new coordinates
+
+    // FIGURE OUT THE CENTRE BLOCK
 
     // Get the lowest and highest values in the arrays...
 
-    /*
-    xCoord.forEach(value => (xCoordRange < value) && (xCoordRange = value))
-    yCoord.forEach(value => (yCoordRange < value) && (yCoordRange = value))
+    xCoordOld.forEach(value => (xCoordRange < value) && (xCoordRange = value))
+    yCoordOld.forEach(value => (yCoordRange < value) && (yCoordRange = value))
 
     // i.e.
     // 1, 10
@@ -101,7 +131,6 @@ function rotateBlock(blocks, rotationDirection) {
 
     // ...then figure out the centre block based on that.
 
-    */
 }
 
 function gridDimensions(returnIndex) {
