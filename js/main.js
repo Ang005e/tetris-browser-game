@@ -97,7 +97,7 @@ function rotateBlock(blocks, rotationDirection) {
     // ...then figure out the centre block based on that.
 
     */
-};
+}
 
 function pageDimensions(returnIndex) {
     // pgWidth = 0, pgHeight = 1
