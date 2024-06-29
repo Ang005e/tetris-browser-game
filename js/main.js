@@ -3,8 +3,13 @@
 
 // Add listeners to the left and right arrow keys, or A and D.
 document.addEventListener('keydown', e => {
-    rotateBlock(document.querySelectorAll('.blocks'), keyPressDirection(e))
+    let blocks = document.querySelectorAll('.blocks')
+    rotateBlock(blocks, keyPressDirection(e))
 })
+
+/* ------------- RUN AT START ------------- */
+
+
 
 // Choose a tetris-like shape (from preset options).
 
@@ -24,15 +29,15 @@ function keyPressDirection(key) {
     switch(key.keyCode) {
         case 37: // left arrow key
             direction = 'counter clockwise'
-            console.log(direction)
-            return direction;
+            break;
         case 39: // right arrow key
             direction = 'clockwise'
-            console.log(direction)
-            return direction;
+            break;
         default:
             return;
     }
+    console.log(`DIRECTION: ${direction}`)
+    return direction;
 }
 
 function rotateBlock(blocks, rotationDirection) {
@@ -51,26 +56,16 @@ function rotateBlock(blocks, rotationDirection) {
         (rotation = 0)
     }
 
-    /*
-    let xCoord = [];
-    let yCoord = [];
-    let xCoordRange = [];
-    let yCoordRange = [];
-    let xAxisFurther;
-    */
-
-    gridDimensions()
-
     // testing block generation within the range of the grid
     // this should be repurposed for random placement of the left/rightmost block on the screen
 
-    blocks.forEach(block => block.style.gridColumnStart = gridRange('columns'));
-    blocks.forEach(block => block.style.gridRowStart = gridRange('rows'));
+    blocks.forEach(block => block.style.left = `${getPageSize('width')}px`)
+    blocks.forEach(block => block.style.top = `${getPageSize('height')}px`);
 
-            for (let i = 0; i < blocks.length; i++) {
+    for (let i = 0; i < blocks.length; i++) {
         let block = blocks[i];
 
-        console.log(rotation)
+        console.log(`ROTATION: ${rotation}`)
         block.style.rotate = `${rotation}deg`; // turns each block around, but doesn't move them.
 
         /*
@@ -102,21 +97,30 @@ function rotateBlock(blocks, rotationDirection) {
     // ...then figure out the centre block based on that.
 
     */
-}
+};
 
-function gridDimensions(returnIndex) {
-    // 0 = rows, 1 = columns, 2 = area, 3 = all
-    let cols = getComputedStyle(document.querySelector('main')).gridTemplateColumns.split(' ').length
-    let rows = getComputedStyle(document.querySelector('main')).gridTemplateRows.split(' ').length
-    let dimensions = [rows, cols, rows*cols]
-    // console.log(dimensions);
+function pageDimensions(returnIndex) {
+    // pgWidth = 0, pgHeight = 1
+    let pgWidth = getComputedStyle(document.querySelector('main')).width.split('p')[0]
+    let pgHeight = getComputedStyle(document.querySelector('main')).height.split('p')[0]
+
+    // Here, I've tried using width/height instead of grid
+
+    pgHeight = Math.round(parseInt(pgHeight));
+    pgWidth = Math.round(parseInt(pgWidth));
+    let dimensions = [pgWidth-50, pgHeight-50] // width or height, minus the size of the block itself
+    let cells = (pgWidth*pgHeight) / 50 // width divided by the block size (50)
+    // console.log(cells);
     return dimensions[returnIndex];
 }
 
-function gridRange(axis) {
-    if (axis === 'rows') {
-        return (Math.round(Math.random() * gridDimensions(0))).toString();
-    } else if (axis === 'columns') {
-        return (Math.round(Math.random() * gridDimensions(1))).toString();
+function getPageSize(axis) {
+    let size;
+    if (axis === 'width') {
+        size = (Math.random() * pageDimensions(0)).toString();
+    } else if (axis === 'height') {
+        size = (Math.random() * pageDimensions(1)).toString();
     }
+    console.log(`${axis}: ${size}`);
+    return size;
 }
